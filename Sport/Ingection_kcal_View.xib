@@ -19,14 +19,14 @@
             <rect key="frame" x="0.0" y="0.0" width="88" height="166"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="09.00 am" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x47-cE-b1a">
-                    <rect key="frame" x="10" y="45" width="45.5" height="12"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x47-cE-b1a">
+                    <rect key="frame" x="10" y="45" width="0.0" height="0.0"/>
                     <fontDescription key="fontDescription" type="system" pointSize="10"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="-5" translatesAutoresizingMaskIntoConstraints="NO" id="Yei-O0-bKc">
-                    <rect key="frame" x="10" y="77" width="16.5" height="30.5"/>
+                    <rect key="frame" x="10" y="65" width="16.5" height="30.5"/>
                     <subviews>
                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" placeholder="0" textAlignment="natural" minimumFontSize="24" translatesAutoresizingMaskIntoConstraints="NO" id="MiX-Ut-IOa">
                             <rect key="frame" x="0.0" y="0.0" width="16.5" height="30.5"/>
@@ -44,12 +44,6 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="✚" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ofY-Zi-Dnj">
-                    <rect key="frame" x="62" y="10" width="16" height="25.5"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="21"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="kcal" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gyp-Uk-uTx">
                     <rect key="frame" x="10" y="108" width="45" height="21.5"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -57,20 +51,36 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="plus" catalog="system" highlighted="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BTo-Wg-cjk">
+                    <rect key="frame" x="53" y="7" width="30" height="30"/>
+                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="iux-aP-Caw"/>
+                        <constraint firstAttribute="height" constant="34" id="y4I-X2-HLh"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <constraints>
                 <constraint firstItem="x47-cE-b1a" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="45" id="25h-ZU-AfT"/>
-                <constraint firstAttribute="trailing" secondItem="ofY-Zi-Dnj" secondAttribute="trailing" constant="10" id="FXe-L5-q1n"/>
+                <constraint firstAttribute="trailing" secondItem="BTo-Wg-cjk" secondAttribute="trailing" constant="5" id="Jhj-d5-Hk1"/>
                 <constraint firstItem="x47-cE-b1a" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="10" id="Pno-dB-zoU"/>
                 <constraint firstItem="Wrg-zO-lbR" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="10" id="Q92-iI-uVa"/>
                 <constraint firstItem="Yei-O0-bKc" firstAttribute="top" secondItem="x47-cE-b1a" secondAttribute="bottom" constant="20" id="c1e-Br-qjI"/>
-                <constraint firstItem="ofY-Zi-Dnj" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="ioA-Cb-kWI"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="Wrg-zO-lbR" secondAttribute="bottom" constant="7" id="nTS-ec-u8R"/>
                 <constraint firstItem="Yei-O0-bKc" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="10" id="tPl-Qb-c8Y"/>
+                <constraint firstItem="BTo-Wg-cjk" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="yag-i4-Qlp"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <point key="canvasLocation" x="131.8840579710145" y="153.34821428571428"/>
         </view>
+        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="lMR-ks-26d">
+            <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <point key="canvasLocation" x="245" y="94"/>
+        </imageView>
     </objects>
+    <resources>
+        <image name="plus" catalog="system" width="128" height="113"/>
+    </resources>
 </document>
