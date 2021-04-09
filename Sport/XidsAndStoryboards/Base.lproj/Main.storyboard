@@ -105,15 +105,16 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="BEi-Sf-bkh">
-                                <rect key="frame" x="124" y="107" width="54.5" height="23"/>
+                                <rect key="frame" x="124" y="107" width="54.5" height="21.5"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="0" textAlignment="natural" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7Xf-Ie-W0E">
-                                        <rect key="frame" x="0.0" y="0.0" width="12" height="23"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7A5-Ph-kaJ">
+                                        <rect key="frame" x="0.0" y="0.0" width="12" height="21.5"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
-                                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
-                                    </textField>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="kcal" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JZj-8I-kSi">
-                                        <rect key="frame" x="19" y="0.0" width="35.5" height="23"/>
+                                        <rect key="frame" x="19" y="0.0" width="35.5" height="21.5"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -121,7 +122,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="YkF-xi-g0B">
-                                <rect key="frame" x="124" y="138" width="55.5" height="23"/>
+                                <rect key="frame" x="124" y="136.5" width="55.5" height="23"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="0" textAlignment="natural" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oQe-TI-cbi">
                                         <rect key="frame" x="0.0" y="0.0" width="12" height="23"/>
@@ -201,7 +202,7 @@
                         <outlet property="chartKcalView" destination="hmh-np-QBQ" id="rIG-Ol-ZyT"/>
                         <outlet property="coloriesGoalTextField" destination="fhg-uV-hxG" id="Pkh-Jh-dr2"/>
                         <outlet property="dinnerView" destination="eax-uQ-MB8" id="AM0-PZ-62K"/>
-                        <outlet property="eatingTextField" destination="7Xf-Ie-W0E" id="Kha-84-dir"/>
+                        <outlet property="eatingLabel" destination="7A5-Ph-kaJ" id="dSx-Yf-0cb"/>
                         <outlet property="lunchView" destination="fqh-Tc-z8F" id="gsO-Yw-T9c"/>
                         <outlet property="totalLabel" destination="P6b-vW-btE" id="LfU-Z1-UbQ"/>
                     </connections>

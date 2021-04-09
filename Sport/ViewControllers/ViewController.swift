@@ -12,7 +12,7 @@ import Charts
 class ViewController: UIViewController {
 
     @IBOutlet weak var coloriesGoalTextField: UITextField!
-    @IBOutlet weak var eatingTextField: UITextField!
+    @IBOutlet weak var eatingLabel: UILabel!
     @IBOutlet weak var burntTextField: UITextField!
     @IBOutlet weak var totalLabel: UILabel!
     @IBOutlet weak var breakfastView: Ingection_kcal_View!
@@ -48,14 +48,27 @@ class ViewController: UIViewController {
         lunchView.time = Time(hour: 12, minutes: 0)
         dinnerView.time = Time(hour: 17, minutes: 0)
         
+        setupShadowToView(view: breakfastView)
+        setupShadowToView(view: lunchView)
+        setupShadowToView(view: dinnerView)
+        
         breakfastView.ingectionLabel.text = "BREAKFAST"
         lunchView.ingectionLabel.text = "LUNCH"
         dinnerView.ingectionLabel.text = "DINNER"
     }
     
+    private func setupShadowToView(view: Ingection_kcal_View) {
+        view.layer.shadowColor = #colorLiteral(red: 0.8039215686, green: 0.8039215686, blue: 0.8823529412, alpha: 1)
+        view.layer.shadowOpacity = 0
+        view.layer.shadowOffset = CGSize(width: 10, height: 20)
+        view.layer.shadowRadius = 10
+        view.layer.shadowPath = UIBezierPath(rect: breakfastView.bounds).cgPath
+        view.layer.shouldRasterize = true
+        view.layer.rasterizationScale = UIScreen.main.scale
+    }
+    
     private func setupTopFields() {
         coloriesGoalTextField.delegate = self
-        eatingTextField.delegate = self
         burntTextField.delegate = self
     }
     
@@ -110,7 +123,6 @@ class ViewController: UIViewController {
         dinnerView.ingectionKcalTextField.resignFirstResponder()
         
         coloriesGoalTextField.resignFirstResponder()
-        eatingTextField.resignFirstResponder()
         burntTextField.resignFirstResponder()
     }
 }
@@ -119,13 +131,13 @@ extension ViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         
-        let color = Int(coloriesGoalTextField.text ?? "0") ?? 0
-        let eating = Int(eatingTextField.text ?? "0") ?? 0
-        let burn = Int(burntTextField.text ?? "0") ?? 0
-        let total = color + eating - burn
-        totalLabel.text = "\(total)"
-        
         if textField.superview?.superview?.accessibilityIdentifier == "ingectionView" {
+            let breakfastKcal = Int(breakfastView.ingectionKcalTextField.text ?? "0") ?? 0
+            let dinnerKcal = Int(dinnerView.ingectionKcalTextField.text ?? "0") ?? 0
+            let lunchKcal = Int(lunchView.ingectionKcalTextField.text ?? "0") ?? 0
+            let eating = breakfastKcal + dinnerKcal + lunchKcal
+            eatingLabel.text = "\(eating)"
+            
             points.removeAll()
             points.append(ChartDataEntry(x: 0, y: 0))
             points.append(createPointToChart(from: breakfastView))
@@ -134,8 +146,12 @@ extension ViewController: UITextFieldDelegate {
             points.append(ChartDataEntry(x: 6, y: 0))
             
             setupDataToChartKcalView()
-            
         }
+        
+        let eating = Int(eatingLabel.text ?? "0") ?? 0
+        let burn = Int(burntTextField.text ?? "0") ?? 0
+        let total = eating - burn
+        totalLabel.text = "\(total)"
     }
     
     func createPointToChart(from view: Ingection_kcal_View) -> ChartDataEntry {
@@ -154,15 +170,22 @@ extension ViewController: UITextFieldDelegate {
             lunchView.subviews[0].layer.backgroundColor = nil
             dinnerView.subviews[0].layer.backgroundColor = nil
             
+            breakfastView.layer.shadowOpacity = 0
+            lunchView.layer.shadowOpacity = 0
+            dinnerView.layer.shadowOpacity = 0
+            
             switch textField.accessibilityIdentifier {
             case "breakfast" :
                 breakfastView.subviews[0].layer.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+                breakfastView.layer.shadowOpacity = 0.5
                 setCurrentIngectionTime(view: breakfastView)
             case "lunch" :
                 lunchView.subviews[0].layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+                lunchView.layer.shadowOpacity = 0.5
                 setCurrentIngectionTime(view: lunchView)
             case "dinner":
                 dinnerView.subviews[0].layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+                dinnerView.layer.shadowOpacity = 0.5
                 setCurrentIngectionTime(view: dinnerView)
             default:
                 print("default")
@@ -174,7 +197,7 @@ extension ViewController: UITextFieldDelegate {
     
     func setCurrentIngectionTime(view: Ingection_kcal_View) {
         let currentTime = GetTime.getCurrentTime()
-        //view.time = Time(hour: currentTime.hour, minutes: currentTime.minutes)
+        view.time = Time(hour: currentTime.hour, minutes: currentTime.minutes)
         if currentTime.hour > 12 {
             view.ingectionTimeLabel.text = "\(currentTime.hour - 12):\(currentTime.minutes) pm"
         } else {
