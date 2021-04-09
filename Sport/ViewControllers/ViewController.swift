@@ -20,16 +20,22 @@ class ViewController: UIViewController {
     @IBOutlet weak var dinnerView: Ingection_kcal_View!
     @IBOutlet weak var chartKcalView: LineChartView!
     
-    let chartTimeInterval = ["", "09 \n am", "12 \n am", "02 \n pm", "04 \n pm", "06 \n pm", "08 \n pm"]
+    private var points = [ChartDataEntry]()
+    
+    private let chartTimeInterval = ["", "09 \n am", "12 \n am", "02 \n pm", "04 \n pm", "06 \n pm", "08 \n pm"]
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        coloriesGoalTextField.delegate = self
-        eatingTextField.delegate = self
-        burntTextField.delegate = self
-        
+        setupTopFields()
+        setupIngectionViews()
+        setupPointsToChart()
+        setupDataToChartKcalView()
+        setupChartKcalView()
+    }
+    
+    private func setupIngectionViews() {
         breakfastView.ingectionKcalTextField.delegate = self
         lunchView.ingectionKcalTextField.delegate = self
         dinnerView.ingectionKcalTextField.delegate = self
@@ -38,30 +44,49 @@ class ViewController: UIViewController {
         lunchView.ingectionKcalTextField.accessibilityIdentifier = "lunch"
         dinnerView.ingectionKcalTextField.accessibilityIdentifier = "dinner"
         
+        breakfastView.time = Time(hour: 7, minutes: 0)
+        lunchView.time = Time(hour: 12, minutes: 0)
+        dinnerView.time = Time(hour: 17, minutes: 0)
         
         breakfastView.ingectionLabel.text = "BREAKFAST"
         lunchView.ingectionLabel.text = "LUNCH"
         dinnerView.ingectionLabel.text = "DINNER"
-        
-        setupChart()
     }
     
-    func setupChart() {
-        var point = [ChartDataEntry]()
-        point.append(ChartDataEntry(x: 0, y: 10))
-        point.append(ChartDataEntry(x: 1, y: 10))
-        point.append(ChartDataEntry(x: 2, y: 20))
-        point.append(ChartDataEntry(x: 3, y: 15))
-        point.append(ChartDataEntry(x: 6, y: 17))
+    private func setupTopFields() {
+        coloriesGoalTextField.delegate = self
+        eatingTextField.delegate = self
+        burntTextField.delegate = self
+    }
+    
+    private func setupChartKcalView() {
+        chartKcalView.xAxis.valueFormatter = IndexAxisValueFormatter(values:chartTimeInterval)
+        chartKcalView.xAxis.setLabelCount(6, force: false)
+        chartKcalView.xAxis.labelPosition = .bottom
+        chartKcalView.xAxis.labelFont = .systemFont(ofSize: 8)
+        chartKcalView.xAxis.labelTextColor = #colorLiteral(red: 0.6509803922, green: 0.6745098039, blue: 0.7450980392, alpha: 1)
+        chartKcalView.xAxis.drawGridLinesEnabled = false
+        chartKcalView.xAxis.axisLineColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         
-        
-        let line = LineChartDataSet(entries: point)
+        chartKcalView.rightAxis.enabled = false
+        chartKcalView.leftAxis.enabled = false
+        chartKcalView.legend.enabled = false
+        chartKcalView.chartDescription?.text = ""
+    }
+    
+    private func setupPointsToChart() {
+        points.append(ChartDataEntry(x: 0, y: 0))
+        points.append(ChartDataEntry(x: 7, y: 0))
+    }
+    
+    private func setupDataToChartKcalView() {
+        let line = LineChartDataSet(entries: points)
         line.colors = [#colorLiteral(red: 0.5803921569, green: 0.9607843137, blue: 0.9607843137, alpha: 1)]
         line.mode = .cubicBezier
         line.lineWidth = 2
         line.drawCircleHoleEnabled = false
         line.circleColors = [#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)]
-        line.circleRadius = 1
+        line.circleRadius = 1.5
         line.valueColors = [#colorLiteral(red: 0.6509803922, green: 0.6745098039, blue: 0.7450980392, alpha: 1)]
         line.valueFont = .systemFont(ofSize: 12)
         
@@ -76,25 +101,10 @@ class ViewController: UIViewController {
         
         data.addDataSet(line)
         data.setValueFormatter(DefaultValueFormatter(formatter: dataFormatter))
-        
-        chartKcalView.xAxis.valueFormatter = IndexAxisValueFormatter(values:chartTimeInterval)
-        chartKcalView.xAxis.setLabelCount(6, force: false)
-        chartKcalView.xAxis.labelPosition = .bottom
-        chartKcalView.xAxis.labelFont = .systemFont(ofSize: 8)
-        chartKcalView.xAxis.labelTextColor = #colorLiteral(red: 0.6509803922, green: 0.6745098039, blue: 0.7450980392, alpha: 1)
-        chartKcalView.xAxis.drawGridLinesEnabled = false
-        chartKcalView.xAxis.axisLineColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        
-        chartKcalView.rightAxis.enabled = false
-        chartKcalView.leftAxis.enabled = false
-        
         chartKcalView.data = data
-        chartKcalView.legend.enabled = false
-        chartKcalView.chartDescription?.text = ""
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-
         breakfastView.ingectionKcalTextField.resignFirstResponder()
         lunchView.ingectionKcalTextField.resignFirstResponder()
         dinnerView.ingectionKcalTextField.resignFirstResponder()
@@ -108,11 +118,32 @@ class ViewController: UIViewController {
 extension ViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
+        
         let color = Int(coloriesGoalTextField.text ?? "0") ?? 0
         let eating = Int(eatingTextField.text ?? "0") ?? 0
         let burn = Int(burntTextField.text ?? "0") ?? 0
         let total = color + eating - burn
         totalLabel.text = "\(total)"
+        
+        if textField.superview?.superview?.accessibilityIdentifier == "ingectionView" {
+            points.removeAll()
+            points.append(ChartDataEntry(x: 0, y: 0))
+            points.append(createPointToChart(from: breakfastView))
+            points.append(createPointToChart(from: lunchView))
+            points.append(createPointToChart(from: dinnerView))
+            points.append(ChartDataEntry(x: 6, y: 0))
+            
+            setupDataToChartKcalView()
+            
+        }
+    }
+    
+    func createPointToChart(from view: Ingection_kcal_View) -> ChartDataEntry {
+        let time = view.time.hour
+        let x = Double(time - 6) * 6 / 16
+        let y = Double(view.ingectionKcalTextField.text ?? "0") ?? 0
+        
+        return ChartDataEntry(x: x, y: y)
     }
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
@@ -142,21 +173,12 @@ extension ViewController: UITextFieldDelegate {
     }
     
     func setCurrentIngectionTime(view: Ingection_kcal_View) {
-        let currentTime = getCurrentTime()
-        view.time = Time(hour: currentTime.hour, minutes: currentTime.minutes)
+        let currentTime = GetTime.getCurrentTime()
+        //view.time = Time(hour: currentTime.hour, minutes: currentTime.minutes)
         if currentTime.hour > 12 {
             view.ingectionTimeLabel.text = "\(currentTime.hour - 12):\(currentTime.minutes) pm"
         } else {
             view.ingectionTimeLabel.text = "\(currentTime.hour):\(currentTime.minutes) am"
         }
-    }
-    
-    func getCurrentTime() -> Time {
-        let date = Date()
-        let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: date)
-        let minutes = calendar.component(.minute, from: date)
-        
-        return Time(hour: hour, minutes: minutes)
     }
 }

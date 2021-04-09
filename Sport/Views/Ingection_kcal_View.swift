@@ -14,14 +14,11 @@ class Ingection_kcal_View: UIView {
     @IBOutlet weak var ingectionTimeLabel: UILabel!
     @IBOutlet weak var ingectionKcalTextField: UITextField!
     @IBOutlet weak var ingectionLabel: UILabel!
-    var time: Time!
+    public var time: Time!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-    }
-    @IBAction func changintKcalValueTextField(_ sender: Any) {
-        
     }
     
     private func setupView() {
@@ -38,11 +35,7 @@ class Ingection_kcal_View: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupView()
-        
     }
 }
 
-struct Time {
-    var hour: Int
-    var minutes: Int
-}
+
