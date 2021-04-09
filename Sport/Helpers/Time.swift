@@ -14,12 +14,14 @@ class GetTime {
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: date)
         let minutes = calendar.component(.minute, from: date)
+        let second = calendar.component(.second, from: date)
         
-        return Time(hour: hour, minutes: minutes)
+        return Time(hour: hour, minutes: minutes, second: second)
     }
 }
 
 struct Time {
     var hour: Int
     var minutes: Int
+    var second: Int
 }

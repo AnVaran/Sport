@@ -31,7 +31,7 @@ class Ingection_kcal_View: UIView {
         
         addSubview(viewFromXib)
     }
-
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupView()

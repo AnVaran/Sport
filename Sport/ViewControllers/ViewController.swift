@@ -28,14 +28,55 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupTopFields()
+        setupTopTextFields()
         setupIngectionViews()
         setupPointsToChart()
         setupDataToChartKcalView()
         setupChartKcalView()
     }
     
+    private func showAlertToAddKcal(view: Ingection_kcal_View) {
+        
+        let alertController = UIAlertController(title: "Enter calories!", message: "Please add the number of calories you have consumed.", preferredStyle: .alert)
+        alertController.addTextField { (textField : UITextField!) -> Void in
+            textField.placeholder = "Enter value"
+            textField.keyboardType = .numberPad
+        }
+
+        let saveAction = UIAlertAction(title: "Add", style: .default, handler: { alert -> Void in
+            if let textField = alertController.textFields?[0] { [self]
+                if let text = textField.text {
+                    view.ingectionKcalTextField.text = text
+                    self.setTextToEatingLabel()
+                    self.setTextToTotalLabel()
+                    self.reloadChart()
+                }
+            }
+        })
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: {
+            (action : UIAlertAction!) -> Void in })
+
+        alertController.addAction(cancelAction)
+        alertController.addAction(saveAction)
+
+        alertController.preferredAction = saveAction
+
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
     private func setupIngectionViews() {
+        let gestureBreakfast = UITapGestureRecognizer(target: self, action:
+            #selector (self.someAction (_:)))
+        let gestureLunch = UITapGestureRecognizer(target: self, action:
+        #selector (self.someAction (_:)))
+        let gestureDinner = UITapGestureRecognizer(target: self, action:
+        #selector (self.someAction (_:)))
+        
+        self.breakfastView.addGestureRecognizer(gestureBreakfast)
+        self.lunchView.addGestureRecognizer(gestureLunch)
+        self.dinnerView.addGestureRecognizer(gestureDinner)
+        
         breakfastView.ingectionKcalTextField.delegate = self
         lunchView.ingectionKcalTextField.delegate = self
         dinnerView.ingectionKcalTextField.delegate = self
@@ -44,9 +85,9 @@ class ViewController: UIViewController {
         lunchView.ingectionKcalTextField.accessibilityIdentifier = "lunch"
         dinnerView.ingectionKcalTextField.accessibilityIdentifier = "dinner"
         
-        breakfastView.time = Time(hour: 7, minutes: 0)
-        lunchView.time = Time(hour: 12, minutes: 0)
-        dinnerView.time = Time(hour: 17, minutes: 0)
+        breakfastView.time = Time(hour: 7, minutes: 0, second: 0)
+        lunchView.time = Time(hour: 12, minutes: 0, second: 0)
+        dinnerView.time = Time(hour: 17, minutes: 0, second: 0)
         
         setupShadowToView(view: breakfastView)
         setupShadowToView(view: lunchView)
@@ -55,6 +96,55 @@ class ViewController: UIViewController {
         breakfastView.ingectionLabel.text = "BREAKFAST"
         lunchView.ingectionLabel.text = "LUNCH"
         dinnerView.ingectionLabel.text = "DINNER"
+    }
+    
+    @objc func someAction(_ sender:UITapGestureRecognizer){
+        breakfastView.subviews[0].layer.backgroundColor = nil
+        lunchView.subviews[0].layer.backgroundColor = nil
+        dinnerView.subviews[0].layer.backgroundColor = nil
+        
+        breakfastView.layer.shadowOpacity = 0
+        lunchView.layer.shadowOpacity = 0
+        dinnerView.layer.shadowOpacity = 0
+        
+        switch sender.view?.subviews[0].subviews[1].accessibilityIdentifier {
+            case "breakfast" :
+                breakfastView.subviews[0].layer.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+                breakfastView.layer.shadowOpacity = 0.5
+                setCurrentIngectionTime(view: breakfastView)
+                showAlertToAddKcal(view: breakfastView)
+            case "lunch" :
+                lunchView.subviews[0].layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+                lunchView.layer.shadowOpacity = 0.5
+                setCurrentIngectionTime(view: lunchView)
+                showAlertToAddKcal(view: lunchView)
+            case "dinner":
+                dinnerView.subviews[0].layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+                dinnerView.layer.shadowOpacity = 0.5
+                setCurrentIngectionTime(view: dinnerView)
+                showAlertToAddKcal(view: dinnerView)
+            default:
+                print("default")
+        }
+        
+    }
+    private func setTextToEatingLabel() {
+        let breakfastKcal = Int(breakfastView.ingectionKcalTextField.text ?? "0") ?? 0
+        let dinnerKcal = Int(dinnerView.ingectionKcalTextField.text ?? "0") ?? 0
+        let lunchKcal = Int(lunchView.ingectionKcalTextField.text ?? "0") ?? 0
+        let eating = breakfastKcal + dinnerKcal + lunchKcal
+        eatingLabel.text = "\(eating)"
+    }
+    
+    private func reloadChart() {
+        points.removeAll()
+        points.append(ChartDataEntry(x: 0, y: 0))
+        points.append(createPointToChart(from: breakfastView))
+        points.append(createPointToChart(from: lunchView))
+        points.append(createPointToChart(from: dinnerView))
+        points.append(ChartDataEntry(x: 6, y: 0))
+        
+        setupDataToChartKcalView()
     }
     
     private func setupShadowToView(view: Ingection_kcal_View) {
@@ -67,9 +157,10 @@ class ViewController: UIViewController {
         view.layer.rasterizationScale = UIScreen.main.scale
     }
     
-    private func setupTopFields() {
+    private func setupTopTextFields() {
         coloriesGoalTextField.delegate = self
         burntTextField.delegate = self
+        
     }
     
     private func setupChartKcalView() {
@@ -118,90 +209,42 @@ class ViewController: UIViewController {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        breakfastView.ingectionKcalTextField.resignFirstResponder()
-        lunchView.ingectionKcalTextField.resignFirstResponder()
-        dinnerView.ingectionKcalTextField.resignFirstResponder()
-        
         coloriesGoalTextField.resignFirstResponder()
         burntTextField.resignFirstResponder()
+    }
+}
+
+extension ViewController {
+    func createPointToChart(from view: Ingection_kcal_View) -> ChartDataEntry {
+        let time = (view.time.hour * 3600) + (view.time.minutes * 60) + (view.time.second)
+        let x = Double(time - 6 * 3600) * 6 / (16 * 3600)
+        let y = Double(view.ingectionKcalTextField.text ?? "0") ?? 0
+        
+        return ChartDataEntry(x: x, y: y)
+    }
+    
+    
+    func setCurrentIngectionTime(view: Ingection_kcal_View) {
+        let currentTime = GetTime.getCurrentTime()
+        view.time = Time(hour: currentTime.hour, minutes: currentTime.minutes, second: currentTime.second)
+        if currentTime.hour > 12 {
+            view.ingectionTimeLabel.text = "\(currentTime.hour - 12):\(currentTime.minutes) pm"
+        } else {
+            view.ingectionTimeLabel.text = "\(currentTime.hour):\(currentTime.minutes) am"
+        }
     }
 }
  
 extension ViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        
-        if textField.superview?.superview?.accessibilityIdentifier == "ingectionView" {
-            let breakfastKcal = Int(breakfastView.ingectionKcalTextField.text ?? "0") ?? 0
-            let dinnerKcal = Int(dinnerView.ingectionKcalTextField.text ?? "0") ?? 0
-            let lunchKcal = Int(lunchView.ingectionKcalTextField.text ?? "0") ?? 0
-            let eating = breakfastKcal + dinnerKcal + lunchKcal
-            eatingLabel.text = "\(eating)"
-            
-            points.removeAll()
-            points.append(ChartDataEntry(x: 0, y: 0))
-            points.append(createPointToChart(from: breakfastView))
-            points.append(createPointToChart(from: lunchView))
-            points.append(createPointToChart(from: dinnerView))
-            points.append(ChartDataEntry(x: 6, y: 0))
-            
-            setupDataToChartKcalView()
-        }
-        
+        setTextToTotalLabel()
+    }
+    
+    func setTextToTotalLabel() {
         let eating = Int(eatingLabel.text ?? "0") ?? 0
         let burn = Int(burntTextField.text ?? "0") ?? 0
         let total = eating - burn
         totalLabel.text = "\(total)"
-    }
-    
-    func createPointToChart(from view: Ingection_kcal_View) -> ChartDataEntry {
-        let time = view.time.hour
-        let x = Double(time - 6) * 6 / 16
-        let y = Double(view.ingectionKcalTextField.text ?? "0") ?? 0
-        
-        return ChartDataEntry(x: x, y: y)
-    }
-    
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-
-        if textField.superview?.superview?.accessibilityIdentifier == "ingectionView" {
-            
-            breakfastView.subviews[0].layer.backgroundColor = nil
-            lunchView.subviews[0].layer.backgroundColor = nil
-            dinnerView.subviews[0].layer.backgroundColor = nil
-            
-            breakfastView.layer.shadowOpacity = 0
-            lunchView.layer.shadowOpacity = 0
-            dinnerView.layer.shadowOpacity = 0
-            
-            switch textField.accessibilityIdentifier {
-            case "breakfast" :
-                breakfastView.subviews[0].layer.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-                breakfastView.layer.shadowOpacity = 0.5
-                setCurrentIngectionTime(view: breakfastView)
-            case "lunch" :
-                lunchView.subviews[0].layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-                lunchView.layer.shadowOpacity = 0.5
-                setCurrentIngectionTime(view: lunchView)
-            case "dinner":
-                dinnerView.subviews[0].layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-                dinnerView.layer.shadowOpacity = 0.5
-                setCurrentIngectionTime(view: dinnerView)
-            default:
-                print("default")
-            }
-        }
-        
-        return true
-    }
-    
-    func setCurrentIngectionTime(view: Ingection_kcal_View) {
-        let currentTime = GetTime.getCurrentTime()
-        view.time = Time(hour: currentTime.hour, minutes: currentTime.minutes)
-        if currentTime.hour > 12 {
-            view.ingectionTimeLabel.text = "\(currentTime.hour - 12):\(currentTime.minutes) pm"
-        } else {
-            view.ingectionTimeLabel.text = "\(currentTime.hour):\(currentTime.minutes) am"
-        }
     }
 }
