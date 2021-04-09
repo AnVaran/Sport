@@ -139,9 +139,9 @@ class ViewController: UIViewController {
     private func reloadChart() {
         points.removeAll()
         points.append(ChartDataEntry(x: 0, y: 0))
-        points.append(createPointToChart(from: breakfastView))
-        points.append(createPointToChart(from: lunchView))
-        points.append(createPointToChart(from: dinnerView))
+        points.append(ChartDataEntry(x: 1, y: Double(breakfastView.ingectionKcalTextField.text ?? "0") ?? 0))
+        points.append(ChartDataEntry(x: 3, y: Double(lunchView.ingectionKcalTextField.text ?? "0") ?? 0))
+        points.append(ChartDataEntry(x: 5, y: Double(dinnerView.ingectionKcalTextField.text ?? "0") ?? 0))
         points.append(ChartDataEntry(x: 6, y: 0))
         
         setupDataToChartKcalView()
@@ -165,6 +165,7 @@ class ViewController: UIViewController {
     
     private func setupChartKcalView() {
         chartKcalView.xAxis.valueFormatter = IndexAxisValueFormatter(values:chartTimeInterval)
+        chartKcalView.xAxis.drawLabelsEnabled = false
         chartKcalView.xAxis.setLabelCount(6, force: false)
         chartKcalView.xAxis.labelPosition = .bottom
         chartKcalView.xAxis.labelFont = .systemFont(ofSize: 8)
