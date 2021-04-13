@@ -43,13 +43,13 @@ class ViewController: UIViewController {
             textField.keyboardType = .numberPad
         }
 
-        let saveAction = UIAlertAction(title: "Add", style: .default, handler: { alert -> Void in
-            if let textField = alertController.textFields?[0] { [self]
+        let saveAction = UIAlertAction(title: "Add", style: .default, handler: { [weak self] alert -> Void in
+            if let textField = alertController.textFields?[0] {
                 if let text = textField.text {
                     view.ingectionKcalTextField.text = text
-                    self.setTextToEatingLabel()
-                    self.setTextToTotalLabel()
-                    self.reloadChart()
+                    self?.setTextToEatingLabel()
+                    self?.setTextToTotalLabel()
+                    self?.reloadChart()
                 }
             }
         })
